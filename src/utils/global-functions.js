@@ -1,5 +1,5 @@
 import apiCall from "../api/apiCall";
-import { ADD_SONG_INTO_RECENT, GET_ALL_SONGS } from "../api/queries";
+import {GET_ALL_SONGS } from "../api/queries";
 
 //******* START API CALL ********/
 export const startApiCall = (setLoader) => {

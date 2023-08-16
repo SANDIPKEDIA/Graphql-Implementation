@@ -1,5 +1,6 @@
 import React from "react";
 import "../asset/css/home.css";
+import { SEARCH_SVG } from "../utils/svg";
 
 const MusicList = (props) => {
   const {
@@ -7,12 +8,19 @@ const MusicList = (props) => {
     searchSongNameKey,
     setsearchSongNameKey,
     currentSong,
-    handleCurrentSong,
     currentSongType,
     addToRecentSong,
     setisPlaying,
-    audioUrll,
+    setcurrentPlayList,
+    setcurrentSong,
   } = props;
+
+  const handleCurrentSong = (song) => {
+    setcurrentSong(song);
+    setcurrentPlayList(getSongs);
+    localStorage.setItem("currentPlayList", JSON.stringify(getSongs));
+    localStorage.setItem("currentSong", JSON.stringify(song));
+  };
 
   return (
     <div className="mid_section">
@@ -36,16 +44,7 @@ const MusicList = (props) => {
               setsearchSongNameKey(e.target.value);
             }}
           />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="bi bi-search text-secondary"
-            viewBox="0 0 16 16"
-          >
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-          </svg>
+          <SEARCH_SVG />
         </div>
       )}
       <div className="midSection_scroll">

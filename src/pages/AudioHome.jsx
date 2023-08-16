@@ -6,7 +6,6 @@ import MainPlayList from "../components/MainPlayList";
 import apiCall from "../api/apiCall";
 import { ADD_SONG_INTO_RECENT, GET_SONGS_BY_TYPE } from "../api/queries";
 
-
 const AudioHome = () => {
   const [getSongs, setgetSongs] = useState(null);
   const [currentSongType, setcurrentSongType] = useState("FAVOURITES");
@@ -24,49 +23,6 @@ const AudioHome = () => {
 
   const [currentBackgroumdImage, setCurrentBackgroumdImage] = useState(null);
 
-  const handleCurrentSong = (song) => {
-    setcurrentSong(song);
-    setcurrentPlayList(getSongs);
-    localStorage.setItem("currentPlayList", JSON.stringify(getSongs));
-    localStorage.setItem("currentSong", JSON.stringify(song));
-  };
-
-  const handleChangeSong = (isNext, songId) => {
-    //IF I WANT CIRCULATE ALL SONGS
-    // if (isNext) {
-    //   console.log(songId, allSongs?.length);
-    //   let nextSong = allSongs[songId];
-    //   setcurrentSong(nextSong);
-    // } else {
-    //   let prevSong = allSongs[songId - 2];
-    //   setcurrentSong(prevSong);
-    // }
-
-    //IF I WANT CIRCULATE ONLY PLAYLIST SONGS
-
-    let currentSongIndex = currentPlayList.findIndex((x) => x.id === songId);
-    let nextorPrevSong;
-    if (currentPlayList?.length === currentSongIndex + 1 && isNext) {
-      console.log(currentPlayList[0]);
-      nextorPrevSong = currentPlayList[1];
-    }
-    if (currentSongIndex == 0 && !isNext) {
-      nextorPrevSong = currentPlayList[currentPlayList?.length - 1];
-    } else if (
-      (currentPlayList?.length !== currentSongIndex + 1 && isNext) ||
-      (currentSongIndex !== 0 && !isNext)
-    ) {
-      nextorPrevSong =
-        currentPlayList[isNext ? currentSongIndex + 1 : currentSongIndex - 1];
-    }
-    setcurrentSong(nextorPrevSong);
-    localStorage.setItem("currentSong", JSON.stringify(nextorPrevSong));
-  };
-
-  const handlePlayOrPauseMusic = () => {
-    setisPlaying(!isPlaying);
-  };
-
   useEffect(() => {
     if (currentSong) {
       setCurrentBackgroumdImage(
@@ -75,8 +31,8 @@ const AudioHome = () => {
       setisAudioPlayingLoader(true);
       !isPlaying && setisAudioPlayingLoader(false);
       isPlaying &&
-        setTimeout(() => {
-          audioUrll.play();
+        setTimeout(async() => {
+         await audioUrll.play();
           setisAudioPlayingLoader(false);
         }, 1000);
     }
@@ -145,21 +101,22 @@ const AudioHome = () => {
             searchSongNameKey={searchSongNameKey}
             setsearchSongNameKey={setsearchSongNameKey}
             currentSong={currentSong}
-            handleCurrentSong={handleCurrentSong}
             currentSongType={currentSongType}
             addToRecentSong={addToRecentSong}
             setisPlaying={setisPlaying}
             audioUrll={audioUrll}
+            setcurrentSong={setcurrentSong}
+            setcurrentPlayList={setcurrentPlayList}
           />
           <MainPlayList
             currentSong={currentSong}
             isPlaying={isPlaying}
-            handlePlayOrPauseMusic={handlePlayOrPauseMusic}
             setaudioUrll={setaudioUrll}
-            handleChangeSong={handleChangeSong}
             setisPlaying={setisPlaying}
             audioUrll={audioUrll}
             isAudioPlayingLoader={isAudioPlayingLoader}
+            setcurrentSong={setcurrentSong}
+            currentPlayList={currentPlayList}
           />
         </div>
       </div>
