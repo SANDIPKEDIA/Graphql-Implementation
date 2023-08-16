@@ -27,25 +27,28 @@ const MainPlayList = (props) => {
 } 
   return (
     <div className="play">
+
       <div className="play_header">
         <h4>{currentSong?.title}</h4>
         <p className="text-secondary">{currentSong?.artist}</p>
       </div>
+
       <div className="responsive_div">
-        <div className="play_img my-2">
           <img
+          className="my-3"
             src={`https://song-tc.pixelotech.com${currentSong?.photoUrl}/`}
             alt="song"
           />
-        </div>
       </div>
-      <div className="progress-container my-4">
+
+      <div className="progress-container my-3">
         <progress
           className="progress-bar bg_glass"
           value="50"
           max="100"
         ></progress>
       </div>
+
       <div className="d-flex justify-content-between align-items-center">
         <button className="my_btn bg_glass">
           <svg
@@ -59,6 +62,7 @@ const MainPlayList = (props) => {
             <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
           </svg>
         </button>
+
         <div className="d-flex gap-4 align-items-center">
           <button
             onClick={() => {
@@ -82,6 +86,7 @@ const MainPlayList = (props) => {
               <path d="M.5 3.5A.5.5 0 0 0 0 4v8a.5.5 0 0 0 1 0V8.753l6.267 3.636c.54.313 1.233-.066 1.233-.697v-2.94l6.267 3.636c.54.314 1.233-.065 1.233-.696V4.308c0-.63-.693-1.01-1.233-.696L8.5 7.248v-2.94c0-.63-.692-1.01-1.233-.696L1 7.248V4a.5.5 0 0 0-.5-.5z" />
             </svg>
           </button>
+
           <button 
           onClick={!isPlaying?onMusicPlay:onMusicPause} className="my_btn_3">
             {isPlaying ? (
@@ -119,7 +124,9 @@ const MainPlayList = (props) => {
             >
               My Music
             </audio>
+
           </button>
+
           <button
           disabled={isAudioPlayingLoader}
           // disabled={allSongsLength?.toString() === currentSong?.id}
@@ -141,6 +148,7 @@ const MainPlayList = (props) => {
             </svg>
           </button>
         </div>
+
         <button
           className="my_btn bg_glass"
           onClick={() => {
@@ -173,7 +181,9 @@ const MainPlayList = (props) => {
             </svg>
           )}
         </button>
+
       </div>
+
     </div>
   );
 };

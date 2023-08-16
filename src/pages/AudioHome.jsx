@@ -19,7 +19,10 @@ const AudioHome = () => {
   const [audioUrll, setaudioUrll] = useState();
 
   const [currentPlayList, setcurrentPlayList] = useState(null);
-const [isAudioPlayingLoader, setisAudioPlayingLoader] = useState(false)
+  const [isAudioPlayingLoader, setisAudioPlayingLoader] = useState(false);
+
+  const [currentBackgroumdImage, setCurrentBackgroumdImage] = useState(null);
+
   const handleCurrentSong = (song) => {
     setcurrentSong(song);
     setcurrentPlayList(getSongs);
@@ -41,20 +44,21 @@ const [isAudioPlayingLoader, setisAudioPlayingLoader] = useState(false)
 
     let currentSongIndex = currentPlayList.findIndex((x) => x.id === songId);
     let nextorPrevSong;
-    if (currentPlayList?.length  === currentSongIndex+1 && isNext) {
-      console.log(currentPlayList[0])
+    if (currentPlayList?.length === currentSongIndex + 1 && isNext) {
+      console.log(currentPlayList[0]);
       nextorPrevSong = currentPlayList[1];
     }
-    if (currentSongIndex==0 && !isNext) {
-      nextorPrevSong = currentPlayList[currentPlayList?.length-1];
-    }
-    else if(currentPlayList?.length  !== currentSongIndex+1 && isNext  || currentSongIndex!==0 && !isNext){
+    if (currentSongIndex == 0 && !isNext) {
+      nextorPrevSong = currentPlayList[currentPlayList?.length - 1];
+    } else if (
+      (currentPlayList?.length !== currentSongIndex + 1 && isNext) ||
+      (currentSongIndex !== 0 && !isNext)
+    ) {
       nextorPrevSong =
         currentPlayList[isNext ? currentSongIndex + 1 : currentSongIndex - 1];
     }
     setcurrentSong(nextorPrevSong);
     localStorage.setItem("currentSong", JSON.stringify(nextorPrevSong));
-
   };
 
   const handlePlayOrPauseMusic = () => {
@@ -62,14 +66,14 @@ const [isAudioPlayingLoader, setisAudioPlayingLoader] = useState(false)
   };
   useEffect(() => {
     if (currentSong) {
-      setisAudioPlayingLoader(true)
-      !isPlaying &&      setisAudioPlayingLoader(false)
-      isPlaying && 
-      setTimeout(() => {
-        audioUrll.play();
-        setisAudioPlayingLoader(false)
-      }, 1000);
-     
+      setCurrentBackgroumdImage(`https://song-tc.pixelotech.com${currentSong?.photoUrl}/`)
+      setisAudioPlayingLoader(true);
+      !isPlaying && setisAudioPlayingLoader(false);
+      isPlaying &&
+        setTimeout(() => {
+          audioUrll.play();
+          setisAudioPlayingLoader(false);
+        }, 1000);
     }
   }, [currentSong]);
 
@@ -200,33 +204,42 @@ const [isAudioPlayingLoader, setisAudioPlayingLoader] = useState(false)
   };
 
   return (
-    <div className="home">
-      <Sidebar
-        handleChangeSongCategory={handleChangeSongCategory}
-        currentSongType={currentSongType}
-      />
-      <MusicList
-        getSongs={getSongs}
-        searchSongNameKey={searchSongNameKey}
-        setsearchSongNameKey={setsearchSongNameKey}
-        currentSong={currentSong}
-        handleCurrentSong={handleCurrentSong}
-        currentSongType={currentSongType}
-        addToRecentSong={addToRecentSong}
-        setisPlaying={setisPlaying}
-        audioUrll={audioUrll}
-      />
-      <MainPlayList
-        currentSong={currentSong}
-        isPlaying={isPlaying}
-        handlePlayOrPauseMusic={handlePlayOrPauseMusic}
-        setaudioUrll={setaudioUrll}
-        handleChangeSong={handleChangeSong}
-        allSongsLength={allSongs?.length}
-        setisPlaying={setisPlaying}
-        audioUrll={audioUrll}
-        isAudioPlayingLoader={isAudioPlayingLoader}
-      />
+    <div
+      className="dom"
+      style={{ backgroundImage: `url(${currentBackgroumdImage})` }}
+    >
+      <div className="home d-flex">
+        <Sidebar
+          handleChangeSongCategory={handleChangeSongCategory}
+          currentSongType={currentSongType}
+        />
+        <div className="body_wrapper d-flex">
+
+        
+        <MusicList
+          getSongs={getSongs}
+          searchSongNameKey={searchSongNameKey}
+          setsearchSongNameKey={setsearchSongNameKey}
+          currentSong={currentSong}
+          handleCurrentSong={handleCurrentSong}
+          currentSongType={currentSongType}
+          addToRecentSong={addToRecentSong}
+          setisPlaying={setisPlaying}
+          audioUrll={audioUrll}
+        />
+        <MainPlayList
+          currentSong={currentSong}
+          isPlaying={isPlaying}
+          handlePlayOrPauseMusic={handlePlayOrPauseMusic}
+          setaudioUrll={setaudioUrll}
+          handleChangeSong={handleChangeSong}
+          allSongsLength={allSongs?.length}
+          setisPlaying={setisPlaying}
+          audioUrll={audioUrll}
+          isAudioPlayingLoader={isAudioPlayingLoader}
+        />
+        </div>
+      </div>
     </div>
   );
 };

@@ -11,7 +11,7 @@ const MusicList = (props) => {
     currentSongType,
     addToRecentSong,
     setisPlaying,
-    audioUrll
+    audioUrll,
   } = props;
 
   return (
@@ -48,39 +48,41 @@ const MusicList = (props) => {
           </svg>
         </div>
       )}
-      {getSongs?.map((song, index) => {
-        return (
-          <div
-            onClick={() => {
-              addToRecentSong(song?.id);
-              handleCurrentSong(song);
-              setisPlaying(true)
-            }}
-            className={
-              currentSong?.id === song?.id
-                ? "item mb-3 bg_glass d-flex justify-content-between align-items-center "
-                : "item mb-3 d-flex justify-content-between align-items-center pointer "
-            }
-            key={index}
-          >
-            <div className="d-flex">
-              <img
-                src={`https://song-tc.pixelotech.com${song?.photoUrl}/`}
-                alt="song image"
-              />
-              <span className="ms-2">
-                <h6>{song?.title}</h6>
-                <p className="text-secondary">{song?.artist}</p>
-              </span>
+      <div className="midSection_scroll">
+        {getSongs?.map((song, index) => {
+          return (
+            <div
+              onClick={() => {
+                addToRecentSong(song?.id);
+                handleCurrentSong(song);
+                setisPlaying(true);
+              }}
+              className={
+                currentSong?.id === song?.id
+                  ? "item mb-3 bg_glass d-flex justify-content-between align-items-center "
+                  : "item mb-3 d-flex justify-content-between align-items-center pointer "
+              }
+              key={index}
+            >
+              <div className="d-flex">
+                <img
+                  src={`https://song-tc.pixelotech.com${song?.photoUrl}/`}
+                  alt="song image"
+                />
+                <span className="ms-2">
+                  <h6>{song?.title}</h6>
+                  <p className="text-secondary">{song?.artist}</p>
+                </span>
+              </div>
+              <p className="text-secondary">
+                {song?.duration?.toString()?.slice(0, 1) +
+                  ":" +
+                  song?.duration?.toString()?.slice(1, 7)}
+              </p>
             </div>
-            <p className="text-secondary">
-              {song?.duration?.toString()?.slice(0, 1) +
-                ":" +
-                song?.duration?.toString()?.slice(1, 7)}
-            </p>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };
