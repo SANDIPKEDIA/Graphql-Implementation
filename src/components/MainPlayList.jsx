@@ -8,7 +8,6 @@ const MainPlayList = (props) => {
     setaudioUrll,
     handlePlayOrPauseMusic,
     handleChangeSong,
-    allSongsLength,
     setisPlaying,
     audioUrll,
     isAudioPlayingLoader
@@ -69,9 +68,6 @@ const MainPlayList = (props) => {
               handleChangeSong(false, currentSong?.id);
             }}
             disabled={isAudioPlayingLoader}
-
-            // disabled={currentSong?.id-1===0}
-            // className={currentSong?.id-1===0?"my_btn_2 text-secondary":"my_btn_2 "}
             className={isAudioPlayingLoader?"my_btn_2 text-secondary":"my_btn_2"}
 
          >
@@ -129,11 +125,9 @@ const MainPlayList = (props) => {
 
           <button
           disabled={isAudioPlayingLoader}
-          // disabled={allSongsLength?.toString() === currentSong?.id}
             onClick={() => {
               handleChangeSong(true, currentSong?.id);
             }}
-            // className={allSongsLength?.toString() === currentSong?.id?"my_btn_2 text-secondary":"my_btn_2 "}
             className={isAudioPlayingLoader?"my_btn_2 text-secondary":"my_btn_2"}
           >
             <svg

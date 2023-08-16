@@ -5,12 +5,9 @@ import MusicList from "../components/MusicList";
 import MainPlayList from "../components/MainPlayList";
 import apiCall from "../api/apiCall";
 import { ADD_SONG_INTO_RECENT, GET_SONGS_BY_TYPE } from "../api/queries";
-import {
-  getAllSongs,
-} from "../utils/global-functions";
+
 
 const AudioHome = () => {
-  const [allSongs, setallSongs] = useState(null);
   const [getSongs, setgetSongs] = useState(null);
   const [currentSongType, setcurrentSongType] = useState("FAVOURITES");
   const [searchSongNameKey, setsearchSongNameKey] = useState("");
@@ -44,6 +41,7 @@ const AudioHome = () => {
     //   let prevSong = allSongs[songId - 2];
     //   setcurrentSong(prevSong);
     // }
+
     //IF I WANT CIRCULATE ONLY PLAYLIST SONGS
 
     let currentSongIndex = currentPlayList.findIndex((x) => x.id === songId);
@@ -63,11 +61,6 @@ const AudioHome = () => {
     }
     setcurrentSong(nextorPrevSong);
     localStorage.setItem("currentSong", JSON.stringify(nextorPrevSong));
-  };
-
-  const handleGetAllSongs = async () => {
-    const res = await getAllSongs();
-    setallSongs(res);
   };
 
   const handlePlayOrPauseMusic = () => {
@@ -164,7 +157,6 @@ const AudioHome = () => {
             handlePlayOrPauseMusic={handlePlayOrPauseMusic}
             setaudioUrll={setaudioUrll}
             handleChangeSong={handleChangeSong}
-            allSongsLength={allSongs?.length}
             setisPlaying={setisPlaying}
             audioUrll={audioUrll}
             isAudioPlayingLoader={isAudioPlayingLoader}
