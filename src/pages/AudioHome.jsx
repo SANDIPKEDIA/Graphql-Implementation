@@ -3,10 +3,14 @@ import Sidebar from "../components/Sidebar";
 import "../asset/css/home.css";
 import MusicList from "../components/MusicList";
 import MainPlayList from "../components/MainPlayList";
+import apiCall from "../api/apiCall";
+import { ADD_SONG_INTO_RECENT, GET_SONGS_BY_TYPE } from "../api/queries";
+import {
+  getAllSongs,
+} from "../utils/global-functions";
 
 const AudioHome = () => {
   const [allSongs, setallSongs] = useState(null);
-
   const [getSongs, setgetSongs] = useState(null);
   const [currentSongType, setcurrentSongType] = useState("FAVOURITES");
   const [searchSongNameKey, setsearchSongNameKey] = useState("");
@@ -61,12 +65,20 @@ const AudioHome = () => {
     localStorage.setItem("currentSong", JSON.stringify(nextorPrevSong));
   };
 
+  const handleGetAllSongs = async () => {
+    const res = await getAllSongs();
+    setallSongs(res);
+  };
+
   const handlePlayOrPauseMusic = () => {
     setisPlaying(!isPlaying);
   };
+
   useEffect(() => {
     if (currentSong) {
-      setCurrentBackgroumdImage(`https://song-tc.pixelotech.com${currentSong?.photoUrl}/`)
+      setCurrentBackgroumdImage(
+        `https://song-tc.pixelotech.com${currentSong?.photoUrl}/`
+      );
       setisAudioPlayingLoader(true);
       !isPlaying && setisAudioPlayingLoader(false);
       isPlaying &&
@@ -95,111 +107,32 @@ const AudioHome = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const query = `query {getSongs{id
-            photoUrl
-            audioUrl
-            duration
-            title
-            artist}}`;
-
-      const url = "https://song-tc.pixelotech.com/graphql";
-      const headers = {
-        "Content-Type": "application/json",
-      };
-      const requestBody = {
-        query: query,
-        variables: null,
-      };
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(requestBody),
-        });
-        const responseData = await response.json();
-        setallSongs(responseData?.data?.getSongs);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+  const handleGetSongsByType = async () => {
+    const res = await apiCall(GET_SONGS_BY_TYPE(currentSongType));
+    console.log(res);
+    if (res.success) {
+      setgetSongs(res?.response?.getSongs);
+      if (!currentSong && !currentSongLocal) {
+        setcurrentSong(res?.response?.getSongs?.[0]);
       }
-    };
-    fetchData();
-  }, []);
+      if (!currentPlayList && !currentPlayListLocal) {
+        setcurrentPlayList(res?.response?.getSongs);
+      }
+    } else {
+      console.log("erorrrr---", res.error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      let withSearchValue = ` search:"${
-        searchSongNameKey ? searchSongNameKey : " "
-      }",songType: ${currentSongType}`;
-      let withOutSearchValue = `songType: ${currentSongType}`;
-      const query = `query {getSongs(${
-        currentSongType !== "RECENTLY_PLAYED"
-          ? withSearchValue
-          : withOutSearchValue
-      } ) {id
-            photoUrl
-            audioUrl
-            duration
-            title
-            artist}}`;
-
-      const url = "https://song-tc.pixelotech.com/graphql";
-
-      const headers = {
-        "Content-Type": "application/json",
-      };
-      const requestBody = {
-        query: query,
-        variables: null,
-      };
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(requestBody),
-        });
-        const responseData = await response.json();
-        setgetSongs(responseData?.data?.getSongs);
-        if (!currentSong && !currentSongLocal) {
-          setcurrentSong(responseData?.data?.getSongs?.[0]);
-        }
-        if (!currentPlayList && !currentPlayListLocal) {
-          setcurrentPlayList(responseData?.data?.getSongs);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
+    handleGetSongsByType();
   }, [currentSongType, searchSongNameKey]);
 
   const addToRecentSong = async (songId) => {
-    const query = `
-    mutation UpdateRecentlyPlayed {
-      updateRecentlyPlayed(songId: ${songId}) {
-      ok
-      }
-      }
-            `;
-
-    const url = "https://song-tc.pixelotech.com/graphql";
-
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    const requestBody = {
-      query: query,
-      variables: null,
-    };
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(requestBody),
-      });
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    const res = await apiCall(ADD_SONG_INTO_RECENT(songId));
+    if (res.success) {
+      //SUCCESSS
+    } else {
+      console.log("erorrrr---", res.error);
     }
   };
 
@@ -214,30 +147,28 @@ const AudioHome = () => {
           currentSongType={currentSongType}
         />
         <div className="body_wrapper d-flex">
-
-        
-        <MusicList
-          getSongs={getSongs}
-          searchSongNameKey={searchSongNameKey}
-          setsearchSongNameKey={setsearchSongNameKey}
-          currentSong={currentSong}
-          handleCurrentSong={handleCurrentSong}
-          currentSongType={currentSongType}
-          addToRecentSong={addToRecentSong}
-          setisPlaying={setisPlaying}
-          audioUrll={audioUrll}
-        />
-        <MainPlayList
-          currentSong={currentSong}
-          isPlaying={isPlaying}
-          handlePlayOrPauseMusic={handlePlayOrPauseMusic}
-          setaudioUrll={setaudioUrll}
-          handleChangeSong={handleChangeSong}
-          allSongsLength={allSongs?.length}
-          setisPlaying={setisPlaying}
-          audioUrll={audioUrll}
-          isAudioPlayingLoader={isAudioPlayingLoader}
-        />
+          <MusicList
+            getSongs={getSongs}
+            searchSongNameKey={searchSongNameKey}
+            setsearchSongNameKey={setsearchSongNameKey}
+            currentSong={currentSong}
+            handleCurrentSong={handleCurrentSong}
+            currentSongType={currentSongType}
+            addToRecentSong={addToRecentSong}
+            setisPlaying={setisPlaying}
+            audioUrll={audioUrll}
+          />
+          <MainPlayList
+            currentSong={currentSong}
+            isPlaying={isPlaying}
+            handlePlayOrPauseMusic={handlePlayOrPauseMusic}
+            setaudioUrll={setaudioUrll}
+            handleChangeSong={handleChangeSong}
+            allSongsLength={allSongs?.length}
+            setisPlaying={setisPlaying}
+            audioUrll={audioUrll}
+            isAudioPlayingLoader={isAudioPlayingLoader}
+          />
         </div>
       </div>
     </div>
