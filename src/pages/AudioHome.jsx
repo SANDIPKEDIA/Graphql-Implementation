@@ -33,46 +33,48 @@ const AudioHome = () => {
       }, 100); 
   };
 }
-  useEffect(() => {
-    if (currentSong) {
-      setisAudioPlayingLoader(true);
-      console.log(isPlaying,audioUrll.current)
-      setCurrentBackgroumdImage(
-        `https://song-tc.pixelotech.com${currentSong?.photoUrl}/`
-      );
-      
-      !isPlaying && setisAudioPlayingLoader(false);
-    
-      if(isPlaying && audioUrll.current){
-        setTimeout(() => {
-          audioUrll.current.play().then(res=>{
-            console.log("res----",res)
-            setisAudioPlayingLoader(false)
-          }).         
-          catch(error => {
-            setisAudioPlayingLoader(false)
-            console.error('Play error---:', error);
-          });
- 
-        }, 100); 
-      }
-    }
-  }, [currentSong]);
-
   // useEffect(() => {
   //   if (currentSong) {
+  //     setisAudioPlayingLoader(true);
+  //     console.log(isPlaying,audioUrll.current)
   //     setCurrentBackgroumdImage(
   //       `https://song-tc.pixelotech.com${currentSong?.photoUrl}/`
   //     );
-  //     setisAudioPlayingLoader(true);
+      
   //     !isPlaying && setisAudioPlayingLoader(false);
-  //     isPlaying &&
-  //       setTimeout(async() => {
-  //        await audioUrll.play();
-  //         setisAudioPlayingLoader(false);
-  //       }, 1000);
+    
+  //     if(isPlaying && audioUrll.current){
+  //       setTimeout(() => {
+  //         audioUrll.current.play().then(res=>{
+  //           console.log("res----",res)
+  //           setisAudioPlayingLoader(false)
+  //         }).         
+  //         catch(error => {
+  //           setisAudioPlayingLoader(false)
+  //           console.error('Play error---:', error);
+  //         });
+ 
+  //       }, 100); 
+  //     }
   //   }
-  // }, [currentSong])
+  // }, [currentSong]);
+
+  useEffect(() => {
+    if (currentSong) {
+      setCurrentBackgroumdImage(
+        `https://song-tc.pixelotech.com${currentSong?.photoUrl}/`
+      );
+      setisAudioPlayingLoader(true);
+      !isPlaying && setisAudioPlayingLoader(false);
+      isPlaying &&
+        setTimeout(() => {
+          audioUrll.current.play();
+          setisAudioPlayingLoader(false);
+        }, 1000);
+    }
+  }, [currentSong])
+
+
   const handleChangeSongCategory = (value) => {
     localStorage.setItem("currentSongCategory", value);
     setcurrentSongType(value);
