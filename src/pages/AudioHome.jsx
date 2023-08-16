@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import "../asset/css/home.css";
 import MusicList from "../components/MusicList";
@@ -14,30 +14,65 @@ const AudioHome = () => {
   const currentSongLocal = localStorage.getItem("currentSong");
   const currentSongCategoryLocal = localStorage.getItem("currentSongCategory");
   const currentPlayListLocal = localStorage.getItem("currentPlayList");
+  const audioUrll = useRef(null);
 
   const [isPlaying, setisPlaying] = useState(false);
-  const [audioUrll, setaudioUrll] = useState();
+  // const [audioUrll, setaudioUrll] = useState();
 
   const [currentPlayList, setcurrentPlayList] = useState(null);
   const [isAudioPlayingLoader, setisAudioPlayingLoader] = useState(false);
 
   const [currentBackgroumdImage, setCurrentBackgroumdImage] = useState(null);
 
+  const handlePlay =async () => {
+    if (audioUrll.current) {
+      setTimeout(() => {
+        audioUrll.current.play().catch(error => {
+          console.error('Play error:', error);
+        });
+      }, 100); 
+  };
+}
   useEffect(() => {
     if (currentSong) {
+      setisAudioPlayingLoader(true);
+      console.log(isPlaying,audioUrll.current)
       setCurrentBackgroumdImage(
         `https://song-tc.pixelotech.com${currentSong?.photoUrl}/`
       );
-      setisAudioPlayingLoader(true);
+      
       !isPlaying && setisAudioPlayingLoader(false);
-      isPlaying &&
-        setTimeout(async() => {
-         await audioUrll.play();
-          setisAudioPlayingLoader(false);
-        }, 1000);
+    
+      if(isPlaying && audioUrll.current){
+        setTimeout(() => {
+          audioUrll.current.play().then(res=>{
+            console.log("res----",res)
+            setisAudioPlayingLoader(false)
+          }).         
+          catch(error => {
+            setisAudioPlayingLoader(false)
+            console.error('Play error---:', error);
+          });
+ 
+        }, 100); 
+      }
     }
   }, [currentSong]);
 
+  // useEffect(() => {
+  //   if (currentSong) {
+  //     setCurrentBackgroumdImage(
+  //       `https://song-tc.pixelotech.com${currentSong?.photoUrl}/`
+  //     );
+  //     setisAudioPlayingLoader(true);
+  //     !isPlaying && setisAudioPlayingLoader(false);
+  //     isPlaying &&
+  //       setTimeout(async() => {
+  //        await audioUrll.play();
+  //         setisAudioPlayingLoader(false);
+  //       }, 1000);
+  //   }
+  // }, [currentSong])
   const handleChangeSongCategory = (value) => {
     localStorage.setItem("currentSongCategory", value);
     setcurrentSongType(value);
@@ -58,7 +93,6 @@ const AudioHome = () => {
 
   const handleGetSongsByType = async () => {
     const res = await apiCall(GET_SONGS_BY_TYPE(currentSongType));
-    console.log(res);
     if (res.success) {
       setgetSongs(res?.response?.getSongs);
       if (!currentSong && !currentSongLocal) {
@@ -111,7 +145,6 @@ const AudioHome = () => {
           <MainPlayList
             currentSong={currentSong}
             isPlaying={isPlaying}
-            setaudioUrll={setaudioUrll}
             setisPlaying={setisPlaying}
             audioUrll={audioUrll}
             isAudioPlayingLoader={isAudioPlayingLoader}

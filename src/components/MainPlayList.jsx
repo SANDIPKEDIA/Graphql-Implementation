@@ -9,6 +9,7 @@ import {
   PLAY_SVG,
   PAUSE_SVG,
 } from "../utils/svg";
+import Audio from "./test.mp3";
 
 const MainPlayList = (props) => {
   const {
@@ -22,6 +23,8 @@ const MainPlayList = (props) => {
     setcurrentSong,
   } = props;
   const [isMuted, setisMuted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const handleChangeSong = (isNext, songId) => {
     let currentSongIndex = currentPlayList.findIndex((x) => x.id === songId);
@@ -45,13 +48,27 @@ const MainPlayList = (props) => {
 
   const onMusicPlay = () => {
     setisPlaying(true);
-    audioUrll.play();
+    audioUrll.current.play();
   };
   const onMusicPause = () => {
     setisPlaying(false);
-    audioUrll.pause();
+    audioUrll.current.pause();
   };
 
+  const handleTimeUpdate = () => {
+    setCurrentTime(audioUrll.current.currentTime);
+    
+  };
+
+  const handleLoadedMetadata = () => {
+    setDuration(audioUrll.current.duration);
+  };
+console.log("currentTime",currentTime,duration)
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  }
   return (
     <div className="play">
       <div className="play_header">
@@ -70,9 +87,15 @@ const MainPlayList = (props) => {
       <div className="progress-container my-3">
         <progress
           className="progress-bar bg_glass"
-          value="50"
-          max="100"
-        ></progress>
+          value={currentTime}
+          max={duration}
+        >
+         
+        </progress>
+        <div className="d-flex justify-content-between">
+            <p>{formatTime(currentTime)}</p> 
+            <p>{formatTime(duration)}</p>
+          </div>
       </div>
 
       <div className="d-flex justify-content-between align-items-center">
@@ -103,10 +126,14 @@ const MainPlayList = (props) => {
               id="music"
               style={{ color: "border:1px solid red" }}
               muted={isMuted}
-              src={`https://song-tc.pixelotech.com${currentSong?.audioUrl}/`}
+              src={Audio}
+              // src='./test.mp3'
+              // src={`https://song-tc.pixelotech.com${currentSong?.audioUrl}/`}
               ref={(ref) => {
-                setaudioUrll(ref);
+                audioUrll.current = ref;
               }}
+              onTimeUpdate={handleTimeUpdate}
+              onLoadedMetadata={handleLoadedMetadata}
             >
               My Music
             </audio>
