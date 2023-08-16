@@ -2,28 +2,10 @@ import React, { useState } from "react";
 import logo from "../asset/image/logo.png";
 import "../asset/css/home.css";
 import { CROSS_SVG, LIST_SVG } from "../utils/svg";
+import { SONG_PLAYLIST_TYPE } from "../utils/reserved-values";
 
 const Sidebar = ({ handleChangeSongCategory, currentSongType }) => {
   const [toggle, settoggle] = useState(false);
-  const songCategories = [
-    {
-      name: "For You",
-      value: "FOR_YOU",
-    },
-    {
-      name: "Top Tracks",
-      value: "TOP_TRACKS",
-    },
-    {
-      name: "Favourites",
-      value: "FAVOURITES",
-    },
-    {
-      name: "Recently Played",
-      value: "RECENTLY_PLAYED",
-    },
-  ];
-
   return (
     <>
       <button
@@ -46,7 +28,7 @@ const Sidebar = ({ handleChangeSongCategory, currentSongType }) => {
               Spotify
             </span>
             <ul className="ps-0 pointer">
-              {songCategories?.map((cat, index) => {
+              {SONG_PLAYLIST_TYPE?.map((cat, index) => {
                 return (
                   <li
                     key={index}
@@ -79,7 +61,7 @@ const Sidebar = ({ handleChangeSongCategory, currentSongType }) => {
             Spotify
           </span>
           <ul className="ps-0 pointer">
-            {songCategories?.map((cat, index) => {
+            {SONG_PLAYLIST_TYPE?.map((cat, index) => {
               return (
                 <li
                   key={index}

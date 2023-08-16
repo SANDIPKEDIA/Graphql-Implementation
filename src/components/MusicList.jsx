@@ -1,5 +1,6 @@
 import React from "react";
 import "../asset/css/home.css";
+import { SONG_PLAYLIST_TYPE } from "../utils/reserved-values";
 import { SEARCH_SVG } from "../utils/svg";
 
 const MusicList = (props) => {
@@ -21,7 +22,7 @@ const MusicList = (props) => {
     localStorage.setItem("currentPlayList", JSON.stringify(getSongs));
     localStorage.setItem("currentSong", JSON.stringify(song));
   };
-
+ 
   return (
     <div className="mid_section">
       <h2
@@ -31,7 +32,10 @@ const MusicList = (props) => {
             : "mid_header mb-5"
         }
       >
-        Recently Played
+        {SONG_PLAYLIST_TYPE
+          .filter((sg) => sg.value === currentSongType)
+          .map(({ name }) => name)}
+        {SONG_PLAYLIST_TYPE?.filter}
       </h2>
       {currentSongType !== "RECENTLY_PLAYED" && (
         <div className="input my-4 bg_glass d-flex justify-content-between align-items-center">

@@ -15,13 +15,13 @@ const MainPlayList = (props) => {
   const {
     currentSong,
     isPlaying,
-    setaudioUrll,
     setisPlaying,
     audioUrll,
     isAudioPlayingLoader,
     currentPlayList,
     setcurrentSong,
   } = props;
+
   const [isMuted, setisMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -57,18 +57,24 @@ const MainPlayList = (props) => {
 
   const handleTimeUpdate = () => {
     setCurrentTime(audioUrll.current.currentTime);
-    
   };
 
   const handleLoadedMetadata = () => {
     setDuration(audioUrll.current.duration);
   };
-console.log("currentTime",currentTime,duration)
+
   function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   }
+
+  const handleSeek = (event) => {
+    const seekTime = parseFloat(event.target.value);
+    audioUrll.current.currentTime = seekTime;
+    setCurrentTime(seekTime);
+  };
+
   return (
     <div className="play">
       <div className="play_header">
@@ -83,19 +89,27 @@ console.log("currentTime",currentTime,duration)
           alt="song"
         />
       </div>
-
+      {/* <progress
+        className="progress-bar bg_glass"
+        value={currentTime}
+        max={duration}
+        onChange={handleSeek}
+      ></progress> */}
       <div className="progress-container my-3">
-        <progress
-          className="progress-bar bg_glass"
+        <input
+          className="progress-bar-input pointer"
+          type="range"
           value={currentTime}
           max={duration}
-        >
-         
-        </progress>
+          step="0.1"
+          onChange={handleSeek}
+     
+        />
+
         <div className="d-flex justify-content-between">
-            <p>{formatTime(currentTime)}</p> 
-            <p>{formatTime(duration)}</p>
-          </div>
+          <p>{formatTime(currentTime)}</p>
+          <p>{formatTime(duration)}</p>
+        </div>
       </div>
 
       <div className="d-flex justify-content-between align-items-center">
