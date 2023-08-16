@@ -24,15 +24,15 @@ const AudioHome = () => {
 
   const [currentBackgroumdImage, setCurrentBackgroumdImage] = useState(null);
 
-  const handlePlay =async () => {
+  const handlePlay = async () => {
     if (audioUrll.current) {
       setTimeout(() => {
-        audioUrll.current.play().catch(error => {
-          console.error('Play error:', error);
+        audioUrll.current.play().catch((error) => {
+          console.error("Play error:", error);
         });
-      }, 100); 
+      }, 100);
+    }
   };
-}
   // useEffect(() => {
   //   if (currentSong) {
   //     setisAudioPlayingLoader(true);
@@ -40,21 +40,21 @@ const AudioHome = () => {
   //     setCurrentBackgroumdImage(
   //       `https://song-tc.pixelotech.com${currentSong?.photoUrl}/`
   //     );
-      
+
   //     !isPlaying && setisAudioPlayingLoader(false);
-    
+
   //     if(isPlaying && audioUrll.current){
   //       setTimeout(() => {
   //         audioUrll.current.play().then(res=>{
   //           console.log("res----",res)
   //           setisAudioPlayingLoader(false)
-  //         }).         
+  //         }).
   //         catch(error => {
   //           setisAudioPlayingLoader(false)
   //           console.error('Play error---:', error);
   //         });
- 
-  //       }, 100); 
+
+  //       }, 100);
   //     }
   //   }
   // }, [currentSong]);
@@ -72,8 +72,7 @@ const AudioHome = () => {
           setisAudioPlayingLoader(false);
         }, 1000);
     }
-  }, [currentSong])
-
+  }, [currentSong]);
 
   const handleChangeSongCategory = (value) => {
     localStorage.setItem("currentSongCategory", value);
