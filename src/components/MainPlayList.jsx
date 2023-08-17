@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DOMAIN_URL } from "../api/base";
 import "../asset/css/home.css";
 import {
   MUTED_SVG,
@@ -9,7 +10,7 @@ import {
   PLAY_SVG,
   PAUSE_SVG,
 } from "../utils/svg";
-import Audio from "./test.mp3";
+import Loader from "./Loader";
 
 const MainPlayList = (props) => {
   const {
@@ -22,10 +23,13 @@ const MainPlayList = (props) => {
     setcurrentSong,
   } = props;
 
+  //* ******* DEFINE STATES ******* */
+
   const [isMuted, setisMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
+  //* ******* FUNCTION FOR CHANGE SONG PREV OR NEXT ******* */
   const handleChangeSong = (isNext, songId) => {
     let currentSongIndex = currentPlayList.findIndex((x) => x.id === songId);
     let nextorPrevSong;
@@ -33,7 +37,7 @@ const MainPlayList = (props) => {
       console.log(currentPlayList[0]);
       nextorPrevSong = currentPlayList[1];
     }
-    if (currentSongIndex == 0 && !isNext) {
+    if (currentSongIndex === 0 && !isNext) {
       nextorPrevSong = currentPlayList[currentPlayList?.length - 1];
     } else if (
       (currentPlayList?.length !== currentSongIndex + 1 && isNext) ||
@@ -46,15 +50,19 @@ const MainPlayList = (props) => {
     localStorage.setItem("currentSong", JSON.stringify(nextorPrevSong));
   };
 
+  //* ******* FUNCTION FOR PLAY MUSIC ******* */
   const onMusicPlay = () => {
     setisPlaying(true);
     audioUrll.current.play();
   };
+
+  //* ******* FUNCTION FOR PAUSE MUSIC ******* */
   const onMusicPause = () => {
     setisPlaying(false);
     audioUrll.current.pause();
   };
 
+  //* ******* NEXT FOLLOWING 4 FUNCTIONS ARE FOR THAT PROGRESS BAR HANDLING ******* */
   const handleTimeUpdate = () => {
     setCurrentTime(audioUrll.current.currentTime);
   };
@@ -85,16 +93,10 @@ const MainPlayList = (props) => {
       <div className="responsive_div">
         <img
           className="my-3"
-          src={`https://song-tc.pixelotech.com${currentSong?.photoUrl}/`}
+          src={`${DOMAIN_URL}${currentSong?.photoUrl}/`}
           alt="song"
         />
       </div>
-      {/* <progress
-        className="progress-bar bg_glass"
-        value={currentTime}
-        max={duration}
-        onChange={handleSeek}
-      ></progress> */}
       <div className="progress-container my-2">
         <input
           className="progress-bar-input pointer"
@@ -103,7 +105,6 @@ const MainPlayList = (props) => {
           max={duration}
           step="0.1"
           onChange={handleSeek}
-     
         />
 
         <div className="d-flex justify-content-between">
@@ -130,28 +131,14 @@ const MainPlayList = (props) => {
             <PREV_SVG />
           </button>
 
-          <button
+          {isAudioPlayingLoader && <Loader />}
+        {  !isAudioPlayingLoader &&<button
             onClick={!isPlaying ? onMusicPlay : onMusicPause}
             className="my_btn_3"
           >
-            {isPlaying ? <PAUSE_SVG /> : <PLAY_SVG />}
-
-            <audio
-              id="music"
-              style={{ color: "border:1px solid red" }}
-              muted={isMuted}
-              src={Audio}
-              // src='./test.mp3'
-              // src={`https://song-tc.pixelotech.com${currentSong?.audioUrl}/`}
-              ref={(ref) => {
-                audioUrll.current = ref;
-              }}
-              onTimeUpdate={handleTimeUpdate}
-              onLoadedMetadata={handleLoadedMetadata}
-            >
-              My Music
-            </audio>
-          </button>
+           
+            {isPlaying && !isAudioPlayingLoader ? <PAUSE_SVG /> : <PLAY_SVG />}
+          </button>}
 
           <button
             disabled={isAudioPlayingLoader}
@@ -174,6 +161,20 @@ const MainPlayList = (props) => {
         >
           {!isMuted ? <UNMUTED_SVG /> : <MUTED_SVG />}
         </button>
+
+        <audio
+          id="music"
+          style={{ color: "border:1px solid red" }}
+          muted={isMuted}
+          src={`${DOMAIN_URL}${currentSong?.audioUrl}/`}
+          ref={(ref) => {
+            audioUrll.current = ref;
+          }}
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleLoadedMetadata}
+        >
+          My Music
+        </audio>
       </div>
     </div>
   );

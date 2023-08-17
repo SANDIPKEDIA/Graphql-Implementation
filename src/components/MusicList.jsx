@@ -1,7 +1,9 @@
 import React from "react";
+import { DOMAIN_URL } from "../api/base";
 import "../asset/css/home.css";
 import { SONG_PLAYLIST_TYPE } from "../utils/reserved-values";
 import { SEARCH_SVG } from "../utils/svg";
+import PlayingEffect from "./PlayingEffect";
 
 const MusicList = (props) => {
   const {
@@ -14,17 +16,21 @@ const MusicList = (props) => {
     setisPlaying,
     setcurrentPlayList,
     setcurrentSong,
+    loaderForApi,
+    isPlaying,
+    isAudioPlayingLoader,
   } = props;
 
+  //* ******* FUNCTION FOR CHANGE THE CURRENT SONG ******* */
   const handleCurrentSong = (song) => {
     setcurrentSong(song);
     setcurrentPlayList(getSongs);
     localStorage.setItem("currentPlayList", JSON.stringify(getSongs));
     localStorage.setItem("currentSong", JSON.stringify(song));
   };
- 
+
   return (
-    <div className="mid_section">
+    <div className="mid_section" id="playlist_view">
       <h2
         className={
           currentSongType !== "RECENTLY_PLAYED"
@@ -32,10 +38,10 @@ const MusicList = (props) => {
             : "mid_header mb-5"
         }
       >
-        {SONG_PLAYLIST_TYPE
-          .filter((sg) => sg.value === currentSongType)
-          .map(({ name }) => name)}
-        {SONG_PLAYLIST_TYPE?.filter}
+        {SONG_PLAYLIST_TYPE.filter((sg) => sg.value === currentSongType).map(
+          ({ name }) => name
+        )}
+      
       </h2>
       {currentSongType !== "RECENTLY_PLAYED" && (
         <div className="input my-4 bg_glass d-flex justify-content-between align-items-center">
@@ -51,15 +57,24 @@ const MusicList = (props) => {
           <SEARCH_SVG />
         </div>
       )}
-      <div className="midSection_scroll">
+      <div
+        className={
+          loaderForApi
+            ? "midSection_scroll loading-skeleton"
+            : "midSection_scroll"
+        }
+      >
         {getSongs?.map((song, index) => {
           return (
             <div
               onClick={() => {
-                addToRecentSong(song?.id);
-                handleCurrentSong(song);
-                setisPlaying(true);
+                if (!isAudioPlayingLoader) {
+                  addToRecentSong(song?.id);
+                  handleCurrentSong(song);
+                  setisPlaying(true);
+                }
               }}
+              style={{ cursor: isAudioPlayingLoader && "wait" }}
               className={
                 currentSong?.id === song?.id
                   ? "item mb-3 bg_glass d-flex justify-content-between align-items-center "
@@ -68,15 +83,16 @@ const MusicList = (props) => {
               key={index}
             >
               <div className="d-flex">
-                <img
-                  src={`https://song-tc.pixelotech.com${song?.photoUrl}/`}
-                  alt="song image"
-                />
+                <img src={`${DOMAIN_URL}${song?.photoUrl}/`} alt="song" />
+
                 <span className="ms-2">
                   <h6>{song?.title}</h6>
                   <p className="custom_title">{song?.artist}</p>
                 </span>
               </div>
+              {isPlaying &&
+                currentSong?.id === song?.id &&
+                !isAudioPlayingLoader && <PlayingEffect />}
               <p className="custom_title">
                 {song?.duration?.toString()?.slice(0, 1) +
                   ":" +
@@ -86,6 +102,14 @@ const MusicList = (props) => {
           );
         })}
       </div>
+      {getSongs?.length === 0 && !loaderForApi && (
+        <>
+          <p className="fw-bold">Couldn't find any song.</p>
+          <p className="text-secondary">
+            Try searching again using a different spelling or keyword.
+          </p>
+        </>
+      )}
     </div>
   );
 };

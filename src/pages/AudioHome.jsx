@@ -4,9 +4,16 @@ import "../asset/css/home.css";
 import MusicList from "../components/MusicList";
 import MainPlayList from "../components/MainPlayList";
 import apiCall from "../api/apiCall";
-import { ADD_SONG_INTO_RECENT, GET_SONGS_BY_TYPE } from "../api/queries";
+import {
+  ADD_SONG_INTO_RECENT,
+  GET_SONGS_BY_TYPE,
+  GET_SONGS_BY_TYPE_WITH_SEARCH,
+} from "../api/queries";
+import { startApiCall } from "../utils/global-functions";
+import { DOMAIN_URL } from "../api/base";
 
 const AudioHome = () => {
+  // ******* DEFINE ALL STATES *******
   const [getSongs, setgetSongs] = useState(null);
   const [currentSongType, setcurrentSongType] = useState("FAVOURITES");
   const [searchSongNameKey, setsearchSongNameKey] = useState("");
@@ -15,54 +22,17 @@ const AudioHome = () => {
   const currentSongCategoryLocal = localStorage.getItem("currentSongCategory");
   const currentPlayListLocal = localStorage.getItem("currentPlayList");
   const audioUrll = useRef(null);
-
   const [isPlaying, setisPlaying] = useState(false);
-  // const [audioUrll, setaudioUrll] = useState();
-
   const [currentPlayList, setcurrentPlayList] = useState(null);
   const [isAudioPlayingLoader, setisAudioPlayingLoader] = useState(false);
-
   const [currentBackgroumdImage, setCurrentBackgroumdImage] = useState(null);
-  const [loader, setLoader] = useState(false);
-  const handlePlay = async () => {
-    if (audioUrll.current) {
-      setTimeout(() => {
-        audioUrll.current.play().catch((error) => {
-          console.error("Play error:", error);
-        });
-      }, 100);
-    }
-  };
-  // useEffect(() => {
-  //   if (currentSong) {
-  //     setisAudioPlayingLoader(true);
-  //     console.log(isPlaying,audioUrll.current)
-  //     setCurrentBackgroumdImage(
-  //       `https://song-tc.pixelotech.com${currentSong?.photoUrl}/`
-  //     );
+  const [loaderForApi, setLoaderForApi] = useState(false);
 
-  //     !isPlaying && setisAudioPlayingLoader(false);
-
-  //     if(isPlaying && audioUrll.current){
-  //       setTimeout(() => {
-  //         audioUrll.current.play().then(res=>{
-  //           console.log("res----",res)
-  //           setisAudioPlayingLoader(false)
-  //         }).
-  //         catch(error => {
-  //           setisAudioPlayingLoader(false)
-  //           console.error('Play error---:', error);
-  //         });
-
-  //       }, 100);
-  //     }
-  //   }
-  // }, [currentSong]);
-
+  // ******* USEFFECT FOR SET AUDIO TO PLAY WHENEVER CURRENT SONG CHANGED *******
   useEffect(() => {
     if (currentSong) {
       setCurrentBackgroumdImage(
-        `https://song-tc.pixelotech.com${currentSong?.photoUrl}/`
+        `${DOMAIN_URL}${currentSong?.photoUrl}/`
       );
       setisAudioPlayingLoader(true);
       !isPlaying && setisAudioPlayingLoader(false);
@@ -74,11 +44,13 @@ const AudioHome = () => {
     }
   }, [currentSong]);
 
+  // ******* FUNCTION FOR SET CATEGORY *******
   const handleChangeSongCategory = (value) => {
     localStorage.setItem("currentSongCategory", value);
     setcurrentSongType(value);
   };
 
+  // ******* USEFFECT FOR SET CURRENT SONG /  CURRENT PLATLIST AT INITIAL TIME OF RENDERING*******
   useEffect(() => {
     if (!currentSong && currentSongLocal?.length > 0) {
       setcurrentSong(JSON.parse(currentSongLocal));
@@ -92,8 +64,14 @@ const AudioHome = () => {
     }
   }, []);
 
+  // ******* API CALLED FUNCTION BY CATEGORY AND SEARCH *******
   const handleGetSongsByType = async () => {
-    const res = await apiCall(GET_SONGS_BY_TYPE(currentSongType));
+    startApiCall(setLoaderForApi);
+    const res = await apiCall(
+      currentSongType === "RECENTLY_PLAYED"
+        ? GET_SONGS_BY_TYPE(currentSongType)
+        : GET_SONGS_BY_TYPE_WITH_SEARCH(searchSongNameKey, currentSongType)
+    );
     if (res.success) {
       setgetSongs(res?.response?.getSongs);
       if (!currentSong && !currentSongLocal) {
@@ -102,14 +80,20 @@ const AudioHome = () => {
       if (!currentPlayList && !currentPlayListLocal) {
         setcurrentPlayList(res?.response?.getSongs);
       }
+      setLoaderForApi(false);
     } else {
+      setLoaderForApi(false);
       console.log("erorrrr---", res.error);
     }
   };
 
+  // ******* USEFFECT CALLED WHENEVER CATEGORY AND SEARCH VALUE CHANGED*******
+
   useEffect(() => {
     handleGetSongsByType();
   }, [currentSongType, searchSongNameKey]);
+
+  // ******* API CALLED FOR UPDATE RECENT SONG PLAYLIST*******
 
   const addToRecentSong = async (songId) => {
     const res = await apiCall(ADD_SONG_INTO_RECENT(songId));
@@ -122,15 +106,19 @@ const AudioHome = () => {
 
   return (
     <div
-      className={loader ? "dom loading-skeleton" : "dom"}
+      className="dom"
       style={{ backgroundImage: `url(${currentBackgroumdImage})` }}
     >
       <div className="home d-flex">
+        {/* ******* LEFT SIDEBAR ******* */}
+
         <Sidebar
           handleChangeSongCategory={handleChangeSongCategory}
           currentSongType={currentSongType}
+          setsearchSongNameKey={setsearchSongNameKey}
         />
         <div className="body_wrapper d-flex">
+          {/* ******* SONG AS PER PLAYLIST DIV ******* */}
           <MusicList
             getSongs={getSongs}
             searchSongNameKey={searchSongNameKey}
@@ -142,7 +130,11 @@ const AudioHome = () => {
             audioUrll={audioUrll}
             setcurrentSong={setcurrentSong}
             setcurrentPlayList={setcurrentPlayList}
+            loaderForApi={loaderForApi}
+            isPlaying={isPlaying}
+            isAudioPlayingLoader={isAudioPlayingLoader}
           />
+          {/* ******* MAIN AUDIO PLAYER ******* */}
           <MainPlayList
             currentSong={currentSong}
             isPlaying={isPlaying}

@@ -4,9 +4,21 @@ import "../asset/css/home.css";
 import { CROSS_SVG, LIST_SVG } from "../utils/svg";
 import { SONG_PLAYLIST_TYPE } from "../utils/reserved-values";
 
-const Sidebar = ({ handleChangeSongCategory, currentSongType }) => {
+const Sidebar = (props) => {
+  const { handleChangeSongCategory, currentSongType, setsearchSongNameKey } =
+    props;
   const [toggle, settoggle] = useState(false);
-  
+
+ const handleToogleForComputerView  = () =>{
+  settoggle(false);
+  setsearchSongNameKey("");
+ } 
+ const handleToogleForMobileView  = () =>{
+  let idView = document.getElementById("playlist_view");
+  idView.scrollIntoView();
+  settoggle(false);
+
+} 
   return (
     <>
       <button
@@ -35,10 +47,11 @@ const Sidebar = ({ handleChangeSongCategory, currentSongType }) => {
                     key={index}
                     onClick={() => {
                       handleChangeSongCategory(cat?.value);
+                      handleToogleForMobileView()
                     }}
                     className={
                       currentSongType === cat?.value
-                        ? ""
+                        ? "fw-bold"
                         : "custom_title pointer"
                     }
                   >
@@ -50,11 +63,11 @@ const Sidebar = ({ handleChangeSongCategory, currentSongType }) => {
           </div>
         )}
         <div className="responsive_avatar">
-              <img
-                src="https://images.unsplash.com/photo-1691349202760-b139b5238a76?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=386&q=80"
-                alt=""
-              />
-            </div>
+          <img
+            src="https://lh3.googleusercontent.com/ogw/AGvuzYYjmW_dqxqvFTEZaQuTM4LDuc1vsmnmENgG1SIdq10=s64-c-mo"
+            alt=""
+          />
+        </div>
 
         <div className="computer_nav">
           <span className="nav_header">
@@ -68,10 +81,11 @@ const Sidebar = ({ handleChangeSongCategory, currentSongType }) => {
                   key={index}
                   onClick={() => {
                     handleChangeSongCategory(cat?.value);
+                    handleToogleForComputerView()
                   }}
                   className={
                     currentSongType === cat?.value
-                      ? ""
+                      ? "fw-bold"
                       : "custom_title pointer"
                   }
                 >
@@ -82,7 +96,7 @@ const Sidebar = ({ handleChangeSongCategory, currentSongType }) => {
           </ul>
           <div className="avatar">
             <img
-              src="https://images.unsplash.com/photo-1691349202760-b139b5238a76?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=386&q=80"
+              src="https://lh3.googleusercontent.com/ogw/AGvuzYYjmW_dqxqvFTEZaQuTM4LDuc1vsmnmENgG1SIdq10=s64-c-mo"
               alt=""
             />
           </div>

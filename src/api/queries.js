@@ -12,6 +12,19 @@ export const GET_SONGS_BY_TYPE = (songType) => {
     `;
 };
 
+export const GET_SONGS_BY_TYPE_WITH_SEARCH = (searchKey,songType) => {
+  return `query {
+        getSongs(search:"${searchKey}",songType:${songType} ) {
+            id
+            photoUrl
+            audioUrl
+            duration
+            title
+            artist
+        }
+      }
+    `;
+};
 export const GET_ALL_SONGS = () => {
   return `query {
         getSongs {
