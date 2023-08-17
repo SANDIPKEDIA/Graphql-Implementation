@@ -14,6 +14,7 @@ const Sidebar = (props) => {
   setsearchSongNameKey("");
  } 
  const handleToogleForMobileView  = () =>{
+  setsearchSongNameKey("");
   let idView = document.getElementById("playlist_view");
   idView.scrollIntoView();
   settoggle(false);
