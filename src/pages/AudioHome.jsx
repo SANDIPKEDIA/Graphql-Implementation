@@ -15,7 +15,7 @@ import { DOMAIN_URL } from "../api/base";
 const AudioHome = () => {
   // ******* DEFINE ALL STATES *******
   const [getSongs, setgetSongs] = useState(null);
-  const [currentSongType, setcurrentSongType] = useState("FAVOURITES");
+  const [currentSongType, setcurrentSongType] = useState("TOP_TRACKS");
   const [searchSongNameKey, setsearchSongNameKey] = useState("");
   const [currentSong, setcurrentSong] = useState(null);
   const currentSongLocal = localStorage.getItem("currentSong");
@@ -36,11 +36,27 @@ const AudioHome = () => {
       );
       setisAudioPlayingLoader(true);
       !isPlaying && setisAudioPlayingLoader(false);
-      isPlaying &&
-        setTimeout(() => {
-          audioUrll.current.play();
-          setisAudioPlayingLoader(false);
-        }, 1000);
+      // if(isPlaying){
+      //   setTimeout(() => {
+      //     audioUrll.current.play();
+      //     setisAudioPlayingLoader(false);
+      //   }, 1000);
+      // }
+      if(isPlaying){
+        const playPromise = audioUrll.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              setisAudioPlayingLoader(false);
+            })
+            .catch(error => {
+              setisAudioPlayingLoader(false)
+              console.error('Play error:', error);
+            });
+        }
+      }
+  
+      
     }
   }, [currentSong]);
 
