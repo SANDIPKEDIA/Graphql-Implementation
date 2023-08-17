@@ -74,10 +74,10 @@ const MusicList = (props) => {
                 />
                 <span className="ms-2">
                   <h6>{song?.title}</h6>
-                  <p className="text-secondary">{song?.artist}</p>
+                  <p className="custom_title">{song?.artist}</p>
                 </span>
               </div>
-              <p className="text-secondary">
+              <p className="custom_title">
                 {song?.duration?.toString()?.slice(0, 1) +
                   ":" +
                   song?.duration?.toString()?.slice(1, 7)}

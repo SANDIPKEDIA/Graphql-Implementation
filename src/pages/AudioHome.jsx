@@ -23,7 +23,7 @@ const AudioHome = () => {
   const [isAudioPlayingLoader, setisAudioPlayingLoader] = useState(false);
 
   const [currentBackgroumdImage, setCurrentBackgroumdImage] = useState(null);
-
+  const [loader, setLoader] = useState(false);
   const handlePlay = async () => {
     if (audioUrll.current) {
       setTimeout(() => {
@@ -122,7 +122,7 @@ const AudioHome = () => {
 
   return (
     <div
-      className="dom"
+      className={loader ? "dom loading-skeleton" : "dom"}
       style={{ backgroundImage: `url(${currentBackgroumdImage})` }}
     >
       <div className="home d-flex">

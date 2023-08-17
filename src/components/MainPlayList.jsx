@@ -76,10 +76,10 @@ const MainPlayList = (props) => {
   };
 
   return (
-    <div className="play">
+    <div className="play ">
       <div className="play_header">
         <h4>{currentSong?.title}</h4>
-        <p className="text-secondary">{currentSong?.artist}</p>
+        <p className="custom_title">{currentSong?.artist}</p>
       </div>
 
       <div className="responsive_div">
@@ -95,7 +95,7 @@ const MainPlayList = (props) => {
         max={duration}
         onChange={handleSeek}
       ></progress> */}
-      <div className="progress-container my-3">
+      <div className="progress-container my-2">
         <input
           className="progress-bar-input pointer"
           type="range"
@@ -124,7 +124,7 @@ const MainPlayList = (props) => {
             }}
             disabled={isAudioPlayingLoader}
             className={
-              isAudioPlayingLoader ? "my_btn_2 text-secondary" : "my_btn_2"
+              isAudioPlayingLoader ? "my_btn_2 custom_title" : "my_btn_2"
             }
           >
             <PREV_SVG />
@@ -159,7 +159,7 @@ const MainPlayList = (props) => {
               handleChangeSong(true, currentSong?.id);
             }}
             className={
-              isAudioPlayingLoader ? "my_btn_2 text-secondary" : "my_btn_2"
+              isAudioPlayingLoader ? "my_btn_2 custom_title" : "my_btn_2"
             }
           >
             <NEXT_SVG />

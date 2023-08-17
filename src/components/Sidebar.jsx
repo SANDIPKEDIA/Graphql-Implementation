@@ -38,7 +38,7 @@ const Sidebar = ({ handleChangeSongCategory, currentSongType }) => {
                     className={
                       currentSongType === cat?.value
                         ? ""
-                        : "text-secondary pointer"
+                        : "custom_title pointer"
                     }
                   >
                     {cat?.name}
@@ -71,7 +71,7 @@ const Sidebar = ({ handleChangeSongCategory, currentSongType }) => {
                   className={
                     currentSongType === cat?.value
                       ? ""
-                      : "text-secondary pointer"
+                      : "custom_title pointer"
                   }
                 >
                   {cat?.name}
