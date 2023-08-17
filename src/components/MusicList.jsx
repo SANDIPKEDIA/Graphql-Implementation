@@ -3,6 +3,7 @@ import { DOMAIN_URL } from "../api/base";
 import "../asset/css/home.css";
 import { SONG_PLAYLIST_TYPE } from "../utils/reserved-values";
 import { SEARCH_SVG } from "../utils/svg";
+import Loader from "./Loader";
 import PlayingEffect from "./PlayingEffect";
 
 const MusicList = (props) => {
@@ -98,6 +99,9 @@ const MusicList = (props) => {
               {isPlaying &&
                 currentSong?.id === song?.id &&
                 !isAudioPlayingLoader && <PlayingEffect />}
+              {isPlaying &&
+                currentSong?.id === song?.id &&
+                isAudioPlayingLoader && <Loader />}
               <p className="custom_title">
                 {song?.duration?.toString()?.slice(0, 1) +
                   ":" +
