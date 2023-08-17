@@ -41,7 +41,6 @@ const MusicList = (props) => {
         {SONG_PLAYLIST_TYPE.filter((sg) => sg.value === currentSongType).map(
           ({ name }) => name
         )}
-      
       </h2>
       {currentSongType !== "RECENTLY_PLAYED" && (
         <div className="input my-4 bg_glass d-flex justify-content-between align-items-center">
@@ -83,7 +82,13 @@ const MusicList = (props) => {
               key={index}
             >
               <div className="d-flex">
-                <img src={`${DOMAIN_URL}${song?.photoUrl}/`} alt="song" />
+                <img
+                  src={
+                    song?.photoUrl !== undefined || song?.photoUrl
+                      ? `${DOMAIN_URL}${song?.photoUrl}/`
+                      : "https://cdn.pixabay.com/photo/2023/02/16/03/43/music-player-7792956_1280.jpg"
+                  }
+                />
 
                 <span className="ms-2">
                   <h6>{song?.title}</h6>

@@ -270,16 +270,7 @@ nav {
     margin: 0 2rem;
   }
 }
-.othero-text{
-  font-size: 15px;
-  margin-left: 10px;
-  padding: 4px;
-  background-color: #fff;
-  opacity: 0.5;
-  border-radius: 50%;
-  color:"#000"
 
-}
 @media (max-width: 675px) {
   .play img {
     width: 100% !important;

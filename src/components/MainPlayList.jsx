@@ -93,9 +93,10 @@ const MainPlayList = (props) => {
       <div className="responsive_div">
         <img
           className="my-3"
-          src={`${DOMAIN_URL}${currentSong?.photoUrl}/`}
+          src={currentSong?.photoUrl!==undefined || currentSong?.photoUrl?`${DOMAIN_URL}${currentSong?.photoUrl}/`:'https://cdn.pixabay.com/photo/2023/02/16/03/43/music-player-7792956_1280.jpg'}
           alt="song"
         />
+        
       </div>
       <div className="progress-container my-2">
         <input
